@@ -2,8 +2,9 @@
   "name": "micronode",
   "version": "1.0.0",
   "description": "Video Streaming Platform",
-  "main": "index.js",
+  "main": "src/server/server.ts",
   "scripts": {
+    "dev": "nodemon src/server/server.ts",
     "test": "test"
   },
   "repository": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/zezang/MicroNode#readme",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2"
   },
   "devDependencies": {

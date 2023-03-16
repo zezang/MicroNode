@@ -3,8 +3,16 @@ import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
 
-if (!process.env.PORT) throw new Error('Please specify the port number [CA] for the HTTP server with the environment variable PORT.');
-const PORT: number | string = process.env.PORT;
+dotenv.config();
+
+// if (!process.env.PORT) throw new Error('Please specify the port number [CA] for the HTTP server with the environment variable PORT.');
+const PORT: number | string = process.env.PORT || 3000;
+
+const isDev = process.env.NODE_ENV === 'development';
+
+const videoPath = isDev
+  ? path.resolve(__dirname, '../../assets/videos/SampleVideo_1280x720_1mb.mp4') 
+  : path.resolve(__dirname, '../assets/videos/SampleVideo_1280x720_1mb.mp4');
 
 const app = express();
 app.use(express.json());
@@ -14,7 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/', (req: Request, res: Response) => res.send('Hello World'));
 
 app.get('/videos', async (req: Request, res: Response) => {
-    const videoPath = path.resolve(__dirname, '../../assets/videos/SampleVideo_1280x720_1mb.mp4');
     const stats = await fs.promises.stat(videoPath);
 
     res.writeHead(200, {
@@ -27,4 +34,4 @@ app.get('/videos', async (req: Request, res: Response) => {
 
 
 
-app.listen(PORT, () => console.log(`Connected to port ${PORT}`));
+app.listen(PORT, () => console.log(`Connected to port ${PORT}, path is ${__dirname}`));

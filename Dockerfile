@@ -6,12 +6,14 @@ COPY package*.json ./
 
 COPY tsconfig.json ./
 
+COPY ./assets ./assets
+
 RUN npm install
 
 COPY ./src ./src
 
-COPY ./assets ./assets
-
 RUN npm run build
+
+ENV NODE_ENV=production
 
 CMD ["npm", "start"]

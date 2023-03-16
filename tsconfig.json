@@ -2,7 +2,6 @@
     "compilerOptions": {
       "target": "es2018",
       "module": "commonjs",
-      "types": ["node", "express"],
       "lib": ["dom", "dom.iterable", "esnext", "ES2021.String"],
       "esModuleInterop": true,
       "moduleResolution": "node",

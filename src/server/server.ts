@@ -2,6 +2,9 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
 
+if (!process.env.PORT) throw new Error('Please specify the port number [CA] for the HTTP server with the environment variable PORT.');
+const PORT: number | string = process.env.PORT;
+
 const app: express.Express = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,6 +25,5 @@ app.get('/videos', async (req: Request, res: Response) => {
 });
 
 
-const PORT: number | string = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log(`Connected to port ${PORT}`));

@@ -4,6 +4,7 @@
   "description": "Video Streaming Platform",
   "main": "src/server/server.ts",
   "scripts": {
+    "start": "node src/server/server/ts",
     "dev": "nodemon src/server/server.ts",
     "test": "test"
   },

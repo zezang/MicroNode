@@ -2,23 +2,24 @@ version: '3'
 
 services:
   azure-storage:
+    image: azure-storage
     build:
       context: ./azure-storage
       dockerfile: Dockerfile
     container_name: video-storage
     ports:
     - "4000:80"
+    env_file:
+    - .env.storage
     environment:
       - PORT=80
-      - STORAGE_ACCOUNT_NAME=${STORAGE_ACCOUNT_NAME}
-      - STORAGE_ACCESS_KEY=${STORAGE_ACCESS_KEY}
     restart: "no"
 
   video-streaming:
+    image: video-streaming
     build:
       context: ./video-streaming
       dockerfile: Dockerfile
-  
     container_name: video-streaming
     ports:
     - "4001:80"

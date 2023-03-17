@@ -1,7 +1,17 @@
 FROM node:18.5.0-alpine
 
 WORKDIR /usr/src/app
+
 COPY package*.json ./
-RUN npm install --only=production
+
+COPY tsconfig.json ./
+
+RUN npm install
+
 COPY ./src ./src
+
+RUN npm run build
+
+ENV NODE_ENV=production
+
 CMD npm start

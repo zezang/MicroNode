@@ -39,4 +39,4 @@ app.get('/videos', async (req: Request, res: Response) => {
 
 
 
-app.listen(PORT, () => console.log(`Connected to port ${PORT}, path is ${__dirname}`));
+app.listen(PORT, () => console.log(`Video streaming microservice connected to port ${PORT}`));

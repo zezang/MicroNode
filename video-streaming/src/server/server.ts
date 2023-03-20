@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import http, { IncomingHttpHeaders } from "http";
-import mongodb from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 async function main () {
-  const client = await mongodb.MongoClient.connect(DBHOST);
+  const client = await MongoClient.connect(DBHOST);
   const db = client.db(DBNAME);
   
   const videos = db.collection('videos');
@@ -25,10 +25,12 @@ async function main () {
   app.get('/', (req, res) => res.send('Hello World'));
 
   app.get('/video', async (req: Request, res: Response) => {
-      const id = Number(req.query.id);
-      const videoId = new mongodb.ObjectId(id);
-      
+      const id = req.query.id.toString();
+      const videoId = new ObjectId(id);
+
       const videoRecord = await videos.findOne({ _id: videoId });
+
+      console.log('Result from query: ', videoRecord)
       if (!videoRecord) return res.sendStatus(404);
 
       const forwardRequest = http.request({

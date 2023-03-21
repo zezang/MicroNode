@@ -60,7 +60,7 @@ async function main() {
 
   app.get("/video", async (req, res) => { // Route for streaming video.
       
-      const videoPath = "./assets/videos/SampleVideo_1280x720_1mb.mp4";
+      const videoPath = "./videos/SampleVideo_1280x720_1mb.mp4";
       const stats = await fs.promises.stat(videoPath);
   
       res.writeHead(200, {

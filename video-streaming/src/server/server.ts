@@ -4,6 +4,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import fs from 'fs';
 
 import dotenv from 'dotenv';
+import { send } from 'process';
 dotenv.config();
 
 const PORT: number | string = process.env.PORT || 3000;
@@ -49,7 +50,7 @@ const DBNAME = process.env.DBNAME;
 //   app.listen(PORT, () => console.log(`Video streaming microservice connected to port ${PORT}`));
 // };
 
-function sendViewedMessage(videoPath: String) {
+function sendViewedMessage(videoPath: string) {
   const postOptions = {
     method: 'POST',
     headers: {
@@ -77,7 +78,9 @@ async function main() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  app.get("/video", async (req, res) => { // Route for streaming video.
+  app.get('/', (req: Request, res: Response) => res.send('Hello World'));
+
+  app.get("/video", async (req: Request, res: Response) => { // Route for streaming video.
       
       const videoPath = "./videos/SampleVideo_1280x720_1mb.mp4";
       const stats = await fs.promises.stat(videoPath);
@@ -88,10 +91,12 @@ async function main() {
       });
 
       fs.createReadStream(videoPath).pipe(res);
+
+      sendViewedMessage(videoPath);
   });
 
   app.listen(PORT, () => {
-      console.log("Microservice online.");
+      console.log("Video-streaming microservice online.");
   });
 }
 

@@ -10,6 +10,7 @@
     "test": "test"
   },
   "dependencies": {
+    "amqplib": "^0.10.3",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "mongodb": "^5.1.0",

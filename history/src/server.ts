@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import amqp from 'amqplib';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 
@@ -11,6 +12,7 @@ if (!process.env.DBNAME) throw new Error("Please specify the name of the databas
 const PORT = process.env.PORT;
 const DBHOST: string = process.env.DBHOST;
 const DBNAME: string = process.env.DBNAME;
+const RABBIT = process.env.RABBIT;
 
 async function main() {
     const app: express.Express = express();
@@ -21,12 +23,32 @@ async function main() {
 
     const videosCollection = db.collection('videos');
 
-    app.post('/viewed', async(req: Request, res: Response) => {
-        const { videoPath } = req.body;
-        await videosCollection.insertOne({ videoPath });
+    console.log(`Connecting to RabbitMQ at ${RABBIT}`);
+    const messagingConnection = await amqp.connect(RABBIT);
+    console.log('Connected to RabbitMQ');
 
-        console.log(`Added ${videoPath} to history.`);
-        res.sendStatus(200);
+    const messageChannel = await messagingConnection.createChannel();
+
+    async function consumeViewedMessage(msg) {
+        const parsedMsg = JSON.parse(msg.content.toString());
+        await videosCollection.insertOne({ videoPath: parsedMsg.videoPath});
+
+        console.log('Acknowledging message was handled.');
+        messageChannel.ack(msg);
+    };
+
+    await messageChannel.assertQueue('viewed', {});
+    await messageChannel.consume('viewed', consumeViewedMessage);
+
+    app.get('/history', async(req: Request, res: Response) => {
+        const skip: number = Number(req.query.skip);
+        const limit: number = Number(req.query.limit);
+        const documents = await videosCollection.find()
+            .skip(skip)
+            .limit(limit)
+            .toArray();
+        
+        res.json({ history: documents });
     });
 
     app.listen(PORT, () => console.log('History microservice online'))

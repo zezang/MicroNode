@@ -1,18 +1,20 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import http, { IncomingHttpHeaders } from "http";
+import amqp from 'amqplib';
 import { MongoClient, ObjectId } from 'mongodb';
 import fs from 'fs';
 
 import dotenv from 'dotenv';
-import { send } from 'process';
+
 dotenv.config();
 
-const PORT: number | string = process.env.PORT || 3000;
+if (!process.env.PORT) throw new Error("Please specify the port number for the HTTP server with the environment variable PORT.");
+if (!process.env.RABBIT) throw new Error("Please specify the name of the RabbitMQ host using environment variable RABBIT");
 
+const PORT: number | string = process.env.PORT || 3000;
 const VIDEO_STORAGE_HOST = process.env.VIDEO_STORAGE_HOST;
 const VIDEO_STORAGE_PORT = parseInt(process.env.VIDEO_STORAGE_PORT);
-const DBHOST = process.env.DBHOST;
-const DBNAME = process.env.DBNAME;
+const RABBIT = process.env.RABBIT;
 
 // async function main () {
 //   const client = await MongoClient.connect(DBHOST);
@@ -50,26 +52,11 @@ const DBNAME = process.env.DBNAME;
 //   app.listen(PORT, () => console.log(`Video streaming microservice connected to port ${PORT}`));
 // };
 
-function sendViewedMessage(videoPath: string) {
-  const postOptions = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const body = JSON.stringify({ videoPath });
-
-  const req = http.request('http://history/viewed', postOptions);
-
-  req.on('close', () => console.log(`Sent "viewed" message to history microservice.`));
-  req.on('error', (err) => {
-    console.log('Failed to send "viewed" message');
-    console.error(err && err.stack || err);
-  });
-
-  req.write(body);
-  req.end();
+function sendViewedMessage(messageChannel, videoPath: string) {
+  console.log(`Publishing message on "viewed" queue.`);
+  
+  const msg = JSON.stringify({ videoPath });
+  messageChannel.publish("", "viewed", Buffer.from(msg));
 };
 
 async function main() {
@@ -77,6 +64,12 @@ async function main() {
   const app: express.Express = express();
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+
+  console.log(`Connecting to RabbitMQ server at ${RABBIT}.`);
+  const messagingConnection = await amqp.connect(RABBIT);
+  console.log('Connected to RabbitMQ server');
+
+  const messageChannel = await messagingConnection.createChannel();
 
   app.get('/', (req: Request, res: Response) => res.send('Hello World'));
 
@@ -92,7 +85,7 @@ async function main() {
 
       fs.createReadStream(videoPath).pipe(res);
 
-      sendViewedMessage(videoPath);
+      sendViewedMessage(messageChannel, videoPath);
   });
 
   app.listen(PORT, () => {

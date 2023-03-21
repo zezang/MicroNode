@@ -13,11 +13,6 @@ const VIDEO_STORAGE_PORT = parseInt(process.env.VIDEO_STORAGE_PORT);
 const DBHOST = process.env.DBHOST;
 const DBNAME = process.env.DBNAME;
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
 // async function main () {
 //   const client = await MongoClient.connect(DBHOST);
 //   const db = client.db(DBNAME);
@@ -54,9 +49,33 @@ app.use(express.urlencoded({ extended: true }));
 //   app.listen(PORT, () => console.log(`Video streaming microservice connected to port ${PORT}`));
 // };
 
+function sendViewedMessage(videoPath: String) {
+  const postOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const body = JSON.stringify({ videoPath });
+
+  const req = http.request('http://history/viewed', postOptions);
+
+  req.on('close', () => console.log(`Sent "viewed" message to history microservice.`));
+  req.on('error', (err) => {
+    console.log('Failed to send "viewed" message');
+    console.error(err && err.stack || err);
+  });
+
+  req.write(body);
+  req.end();
+};
+
 async function main() {
 
-  const app = express();
+  const app: express.Express = express();
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   app.get("/video", async (req, res) => { // Route for streaming video.
       

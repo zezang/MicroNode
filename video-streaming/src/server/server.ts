@@ -56,7 +56,7 @@ function sendViewedMessage(messageChannel, videoPath: string) {
   console.log(`Publishing message on "viewed" queue.`);
   
   const msg = JSON.stringify({ videoPath });
-  messageChannel.publish("", "viewed", Buffer.from(msg));
+  messageChannel.publish('viewed', '', Buffer.from(msg));
 };
 
 async function main() {
@@ -65,11 +65,10 @@ async function main() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  console.log(`Connecting to RabbitMQ server at ${RABBIT}.`);
   const messagingConnection = await amqp.connect(RABBIT);
-  console.log('Connected to RabbitMQ server');
-
   const messageChannel = await messagingConnection.createChannel();
+
+  await messageChannel.assertExchange('viewed', 'fanout');
 
   app.get('/', (req: Request, res: Response) => res.send('Hello World'));
 

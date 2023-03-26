@@ -15,7 +15,7 @@ const DBHOST: string = process.env.DBHOST;
 const DBNAME: string = process.env.DBNAME;
 const RABBIT = process.env.RABBIT;
 
-async function main() {
+async function main(): Promise<void> {
     const app: express.Express = express();
     app.use(express.json());
 

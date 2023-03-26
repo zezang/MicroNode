@@ -59,7 +59,7 @@ function sendViewedMessage(messageChannel, videoPath: string) {
   messageChannel.publish('viewed', '', Buffer.from(msg));
 };
 
-async function main() {
+async function main(): Promise<void> {
 
   const app: express.Express = express();
   app.use(express.json());

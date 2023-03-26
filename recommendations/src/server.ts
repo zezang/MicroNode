@@ -23,8 +23,8 @@ async function main(): Promise<void> {
     const db = client.db(DBNAME);
     const videosCollection = db.collection('videos');
 
-    const messagingConnection = amqp.connect(RABBIT);
-    const messageChannel = messagingConnection.createChannel();
+    const messagingConnection = await amqp.connect(RABBIT);
+    const messageChannel = await messagingConnection.createChannel();
 
     async function consumeViewedMessage(msg) {
         const parsedMsg = JSON.parse(msg.content.toString());

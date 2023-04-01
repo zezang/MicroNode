@@ -1,6 +1,6 @@
 resource "azurerm_resource_group" "micronode" {
 
-    name = "micronode"
+    name = var.app_name
 
-    location = "westus"
+    location = var.location
 }

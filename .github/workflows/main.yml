@@ -9,7 +9,7 @@ jobs:
   hello-world:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Runs "hello world" shell script
-      run ./index.sh
+      - uses: actions/checkout@v3
+      - name: Runs "hello world" shell script
+        run ./index.sh
   

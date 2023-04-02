@@ -11,5 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Runs "hello world" shell script
-        run ./index.sh
+        run: ./index.sh
   

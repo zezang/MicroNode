@@ -12,7 +12,7 @@ jobs:
 
     env:
       VERSION: ${{ github.sha }}
-      CONTAINER_REGISTRY: ${{ secrests.CONTAINER_REGISTRY }}
+      CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
       REGISTRY_UN: ${{ secrets.REGISTRY_UN }}
       REGISTRY_PW: ${{ secrets.REGISTRY_PW }}
     

@@ -14,13 +14,11 @@ spec:
     spec:
       containers:
       - name: video-streaming
-        image: micronode.azurecr.io/video-streaming:1
+        image: $CONTAINER_REGISTRY/video-streaming:$VERSION
         imagePullPolicy: IfNotPresent
         env:
         - name: PORT
           value: "4000"
-      imagePullSecrets:
-      - name: micronodesecret
 ---
 apiVersion: v1
 kind: Service

@@ -72,6 +72,10 @@ async function main(): Promise<void> {
 
   app.get('/', (req: Request, res: Response) => res.send('Hello World'));
 
+  app.get('/live', (req: Request, res: Response) => {
+    res.sendStatus(200);
+  });
+
   app.get("/video", async (req: Request, res: Response) => { // Route for streaming video.
       
       const videoPath = "./videos/SampleVideo_1280x720_1mb.mp4";
@@ -90,12 +94,14 @@ async function main(): Promise<void> {
   app.listen(PORT, () => {
       console.log("Video-streaming microservice online.");
   });
-}
+};
 
 main()
   .catch(err => {
     console.log('Video streaming microservice failed to start.');
     console.error(err && err.stack || err);
   });
+
+export default main;
 
 

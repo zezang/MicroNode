@@ -8,14 +8,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        cd video-streaming
-        npm ci
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
       with: 
         node-version: 18.x
         cache: 'npm'
-    - run: npm test
+    - run: |
+        cd video-streaming
+        npm ci
+    - run: |
+        cd video-streaming
+        npm test
 
   

@@ -7,6 +7,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 'video-streaming'
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -15,9 +18,7 @@ jobs:
         cache: 'npm'
     - name: Install dependencies for video-streaming microservice
       run: npm ci
-      working-directory: ./video-streaming
     - name: Run tests for video-streaming microservice
       run: npm test
-      working-directory: ./video-streaming
 
   

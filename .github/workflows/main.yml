@@ -12,13 +12,18 @@ jobs:
         working-directory: './video-streaming'
     steps:
     - uses: actions/checkout@v3
+    - name: Install dependencies for video-streaming microservice
+      run: |
+        cd video-streaming
+        npm ci
+      working-directory: video-streaming
     - uses: actions/setup-node@v3
       with: 
         node-version: 18.x
         cache: 'npm'
-    - name: Install dependencies for video-streaming microservice
-      run: npm ci
     - name: Run tests for video-streaming microservice
-      run: npm test
+      run: |
+        cd video-streaming 
+        npm test
 
   

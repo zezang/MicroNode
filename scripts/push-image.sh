@@ -4,5 +4,5 @@ set -u
 : "$REGISTRY_UN"
 : "$REGISTRY_PW"
 
-echo $REGISTRY_PW | docker login $CONTAINER_REGISTRY --username $REGISTRY_UN --pasword-stdin
+echo $REGISTRY_PW | docker login $CONTAINER_REGISTRY --username $REGISTRY_UN --password-stdin
 docker push $CONTAINER_REGISTRY/video-streaming:$VERSION

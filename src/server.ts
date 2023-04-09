@@ -13,6 +13,8 @@ app.get('/video', async(req: Request, res: Response) => {
   const videoPath = './videos/SampleVideo_1280x720_1mb.mp4';
   const stats = await fs.promises.stat(videoPath);
 
+  console.log('Video route reached...');
+  
   res.writeHead(200, {
     'Content-Length': stats.size,
     'Content-Type': 'video/mp4',
